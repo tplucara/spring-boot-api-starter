@@ -1,164 +1,174 @@
-# API Starterpack — Showcase Version
+# 🚀 Production-Ready Spring Boot API Starter
 
-Production-ready backend API starter built with **Java 21** and **Spring Boot 3**, demonstrating Clean Architecture, JWT authentication, and modern development practices.
+Production-ready backend API built with **Java 21** and **Spring Boot 3**, designed to help teams launch scalable and maintainable backend systems faster.
 
-> **Note:** This is a **showcase version** designed to demonstrate architecture, code quality, and local development setup. Full production deployment (AWS ECS, CI/CD pipelines, infrastructure-as-code) is available as a service.
+This project demonstrates how to structure a real-world backend using **Clean Architecture**, secure authentication, and modern development practices.
+
+> ⚠️ **Showcase Version**
+> This repository demonstrates architecture, code quality, and local development setup.
+> A full production-ready version (AWS, CI/CD pipelines, infrastructure, auto-scaling) is available as a service.
 
 ---
 
-## Architecture
+## 💡 What This Project Solves
 
-The project follows **Clean Architecture** with a feature-based modular structure:
+Many backend projects fail due to poor structure, lack of scalability, and fragile deployment setups.
+
+This starter provides a solid foundation with:
+
+* Clear architecture and separation of concerns
+* Production-ready authentication
+* Database versioning with migrations
+* Containerized development environment
+* CI pipeline for reliability
+
+---
+
+## 🧱 Architecture
+
+The project follows **Clean Architecture**:
 
 ```
 Controller → UseCase → Repository → Database
 ```
 
-- **Controllers** handle HTTP concerns only
-- **UseCases** contain all business logic
-- **Repositories** handle persistence via Spring Data JPA
-- **DTOs** (Java Records) are used for all API input/output
-
-### Modules
-
-| Module   | Description                        |
-|----------|------------------------------------|
-| `auth`   | JWT authentication, refresh tokens |
-| `user`   | User registration and retrieval    |
-| `health` | Application health check           |
+* Controllers handle HTTP concerns only
+* UseCases contain business logic
+* Repositories manage persistence
+* DTOs (Java Records) define API contracts
 
 ---
 
-## Tech Stack
+## 📦 Modules
 
-- Java 21
-- Spring Boot 3.3
-- Spring Security + JWT (jjwt)
-- Spring Data JPA
-- PostgreSQL 16
-- Flyway Migrations
-- SpringDoc OpenAPI (Swagger)
-- Spring Boot Actuator + Prometheus
-- Docker &amp; Docker Compose
-- JUnit 5 + Testcontainers + Mockito
-- GitHub Actions CI
+| Module   | Description                         |
+| -------- | ----------------------------------- |
+| `auth`   | JWT authentication + refresh tokens |
+| `user`   | User registration and retrieval     |
+| `health` | Application health check            |
 
 ---
 
-## Getting Started
+## ⚙️ Tech Stack
 
-### Prerequisites
+* Java 21
+* Spring Boot 3
+* Spring Security + JWT
+* Spring Data JPA
+* PostgreSQL
+* Flyway Migrations
+* Docker & Docker Compose
+* GitHub Actions (CI)
+* Testcontainers + JUnit
 
-- Docker and Docker Compose
-- Java 21 (for local development without Docker)
-- Maven 3.9+ (for local development without Docker)
+---
 
-### Run with Docker Compose
+## ▶️ Running Locally
+
+### With Docker
 
 ```bash
 docker-compose up
 ```
 
-The API will be available at `http://localhost:8080`.
+API available at:
 
-### Run Locally (development)
+```
+http://localhost:8080
+```
 
-Start only PostgreSQL:
+---
+
+### Local Development
 
 ```bash
 docker-compose up postgres
-```
-
-Then run the application:
-
-```bash
 mvn spring-boot:run
 ```
 
 ---
 
-## API Endpoints
+## 🔐 API Overview
 
-### Authentication
+### Auth
 
-| Method | Endpoint         | Description              | Auth Required |
-|--------|------------------|--------------------------|---------------|
-| POST   | `/auth/login`    | Authenticate user        | No            |
-| POST   | `/auth/refresh`  | Refresh access token     | No            |
-| POST   | `/auth/logout`   | Revoke refresh token     | No            |
+* `POST /auth/login`
+* `POST /auth/refresh`
+* `POST /auth/logout`
 
 ### Users
 
-| Method | Endpoint        | Description              | Auth Required |
-|--------|-----------------|--------------------------|---------------|
-| POST   | `/users`        | Register new user        | No            |
-| GET    | `/users/me`     | Get current user         | Yes           |
-| GET    | `/users/{id}`   | Get user by ID           | Yes           |
+* `POST /users`
+* `GET /users/me`
+* `GET /users/{id}`
 
 ### Health
 
-| Method | Endpoint   | Description          | Auth Required |
-|--------|------------|----------------------|---------------|
-| GET    | `/health`  | Application health   | No            |
-
-### Monitoring
-
-| Endpoint               | Description        |
-|------------------------|--------------------|
-| `/actuator/health`     | Health check       |
-| `/actuator/info`       | App info           |
-| `/actuator/metrics`    | Metrics            |
-| `/actuator/prometheus` | Prometheus metrics  |
-
-### Documentation
-
-| Endpoint           | Description    |
-|--------------------|----------------|
-| `/swagger-ui.html` | Swagger UI     |
-| `/v3/api-docs`     | OpenAPI spec   |
+* `GET /health`
 
 ---
 
-## Project Structure
+## 📊 Observability
 
-```
-src/main/java/com/example/api/
-├── auth/
-│   ├── controller/     # Auth endpoints
-│   ├── usecase/        # Login, Refresh, Logout logic
-│   ├── repository/     # Refresh token persistence
-│   ├── dto/            # Request/Response records
-│   └── entity/         # RefreshToken JPA entity
-├── user/
-│   ├── controller/     # User endpoints
-│   ├── usecase/        # CreateUser, GetUser logic
-│   ├── repository/     # User persistence
-│   ├── dto/            # Request/Response records
-│   ├── entity/         # User JPA entity
-│   └── mapper/         # Entity-to-DTO mapping
-├── health/
-│   └── controller/     # Health endpoint
-└── shared/
-    ├── config/         # Security, JWT, OpenAPI config
-    ├── security/       # JWT provider, auth filter
-    └── exception/      # Global exception handling
-```
+* `/actuator/health`
+* `/actuator/metrics`
+* `/actuator/prometheus`
 
 ---
 
-## Testing
+## 📁 Project Structure
 
-Run all tests:
+```
+auth/
+user/
+health/
+shared/
+```
+
+Organized by feature and aligned with Clean Architecture principles.
+
+---
+
+## 🧪 Testing
 
 ```bash
 mvn verify
 ```
 
-- **Unit tests** cover all UseCases using Mockito
-- **Integration tests** use Testcontainers with PostgreSQL
+* Unit tests for business logic
+* Integration tests with Testcontainers
 
 ---
 
-## License
+## 📌 Important Note
 
-This project is a showcase. Full production deployment is available as a service — contact for details.
+This repository is intentionally limited to:
+
+* Local development setup
+* Core backend architecture
+* Basic CI pipeline
+
+It does **not include**:
+
+* Cloud infrastructure (AWS, ECS, Load Balancer)
+* Full CI/CD deployment pipelines
+* Production environment configuration
+
+---
+
+## 🚀 Need a Production-Ready Backend?
+
+This project can be extended into a fully production-ready backend with:
+
+* AWS ECS Fargate deployment
+* Load balancing and auto-scaling
+* Complete CI/CD pipelines
+* Environment separation (dev/staging/prod)
+
+If you need help implementing this in your project, feel free to reach out.
+
+---
+
+## 📄 License
+
+MIT
