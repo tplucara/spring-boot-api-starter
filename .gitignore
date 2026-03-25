@@ -1,0 +1,119 @@
+# =========================
+
+# Java / Maven / Gradle
+
+# =========================
+
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+
+.gradle/
+
+# =========================
+
+# Logs
+
+# =========================
+
+logs/
+*.log
+*.out
+*.err
+
+# =========================
+
+# OS Files
+
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+
+# Environment variables
+
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# =========================
+
+# IDEs
+
+# =========================
+
+# IntelliJ
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VSCode
+
+.vscode/
+
+# Eclipse
+
+.project
+.classpath
+.settings/
+
+# =========================
+
+# Docker
+
+# =========================
+
+docker-data/
+*.pid
+
+# =========================
+
+# Cursor AI
+
+# =========================
+
+.cursor/
+
+# =========================
+
+# Node (caso use frontend ou tools)
+
+# =========================
+
+node_modules/
+
+# =========================
+
+# Test / Coverage
+
+# =========================
+
+coverage/
+*.lcov
+
+# =========================
+
+# Temporary files
+
+# =========================
+
+tmp/
+temp/
+*.tmp
+*.swp

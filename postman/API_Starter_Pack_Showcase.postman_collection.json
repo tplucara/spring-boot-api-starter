@@ -1,0 +1,352 @@
+{
+	"info": {
+		"name": "API Starter Pack Showcase",
+		"description": "Collection for testing the API Starter Pack locally.\n\n## Quick Start\n\n1. Run `docker-compose up`\n2. Execute **Register User** to create an account\n3. Execute **Login** to authenticate (tokens auto-save)\n4. Use any protected endpoint — `{{token}}` is set automatically\n\n## Variables\n\n| Variable | Description |\n|---|---|\n| `baseUrl` | API base URL (default: `http://localhost:8080`) |\n| `token` | Access token (auto-managed) |\n| `refreshToken` | Refresh token (auto-managed) |\n| `userId` | Last created user ID (auto-managed) |",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["health"]
+						},
+						"description": "Simple application health check. No authentication required."
+					},
+					"response": []
+				},
+				{
+					"name": "Actuator Health",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["actuator", "health"]
+						},
+						"description": "Spring Boot Actuator health endpoint with infrastructure details."
+					},
+					"response": []
+				},
+				{
+					"name": "Prometheus Metrics",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/prometheus",
+							"host": ["{{baseUrl}}"],
+							"path": ["actuator", "prometheus"]
+						},
+						"description": "Prometheus-format metrics for monitoring integration."
+					},
+					"response": []
+				}
+			],
+			"description": "Public health and monitoring endpoints."
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const body = pm.response.json();",
+									"    pm.collectionVariables.set(\"userId\", body.id);",
+									"    pm.test(\"User created successfully\", function () {",
+									"        pm.expect(body.email).to.be.a(\"string\");",
+									"        pm.expect(body.active).to.eql(true);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"senha1234\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["users"]
+						},
+						"description": "Register a new user. No authentication required.\n\nThe `userId` variable is automatically saved from the response."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    pm.test(\"Returns authenticated user\", function () {",
+									"        const body = pm.response.json();",
+									"        pm.expect(body.id).to.be.a(\"string\");",
+									"        pm.expect(body.email).to.be.a(\"string\");",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "me"]
+						},
+						"description": "Get the currently authenticated user's profile.\n\nRequires a valid access token (inherited from collection auth)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    pm.test(\"Returns user by ID\", function () {",
+									"        const body = pm.response.json();",
+									"        pm.expect(body.id).to.eql(pm.collectionVariables.get(\"userId\"));",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "{{userId}}"]
+						},
+						"description": "Get a user by their UUID.\n\nUses `{{userId}}` which is auto-set after Register User."
+					},
+					"response": []
+				}
+			],
+			"description": "User registration and retrieval endpoints."
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const body = pm.response.json();",
+									"    pm.collectionVariables.set(\"token\", body.accessToken);",
+									"    pm.collectionVariables.set(\"refreshToken\", body.refreshToken);",
+									"    const payload = JSON.parse(atob(body.accessToken.split('.')[1]));",
+									"    pm.collectionVariables.set(\"userId\", payload.sub);",
+									"    pm.test(\"Tokens received\", function () {",
+									"        pm.expect(body.accessToken).to.be.a(\"string\");",
+									"        pm.expect(body.refreshToken).to.be.a(\"string\");",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"senha1234\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Authenticate with email and password.\n\nOn success, `{{token}}` and `{{refreshToken}}` are automatically saved to collection variables."
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const body = pm.response.json();",
+									"    pm.collectionVariables.set(\"token\", body.accessToken);",
+									"    pm.collectionVariables.set(\"refreshToken\", body.refreshToken);",
+									"    const payload = JSON.parse(atob(body.accessToken.split('.')[1]));",
+									"    pm.collectionVariables.set(\"userId\", payload.sub);",
+									"    pm.test(\"Tokens rotated\", function () {",
+									"        pm.expect(body.accessToken).to.be.a(\"string\");",
+									"        pm.expect(body.refreshToken).to.be.a(\"string\");",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "refresh"]
+						},
+						"description": "Exchange a refresh token for new access + refresh tokens.\n\nThe old refresh token is revoked (token rotation). New tokens are saved automatically."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 204) {",
+									"    pm.collectionVariables.set(\"token\", \"\");",
+									"    pm.collectionVariables.set(\"refreshToken\", \"\");",
+									"    pm.test(\"Logged out — tokens cleared\", function () {",
+									"        pm.expect(pm.response.code).to.eql(204);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout"]
+						},
+						"description": "Revoke the current refresh token.\n\nOn success, `{{token}}` and `{{refreshToken}}` are cleared from collection variables."
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints with automatic token management.\n\nLogin and Refresh automatically save tokens to collection variables."
+		}
+	]
+}
